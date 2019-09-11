@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "1v1";
+}
+
+@section head
+{
+    <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script type="text/javascript" src="~/Scripts/phaser/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        div.centre {
+            width: 720px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 624px;
+            position: absolute;
+            top: 200px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        div.hidden {
+            display: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var gameHub;
+        var connected = false;
+        $(function () {
+            gameHub = $.connection.gameHub;
+
+            $.connection.hub.start().done(function () {
+                connected = true;
+            });
+
+            $('#join').click(function () {
+                var un = $('#usernameTb').val();
+                gameHub.server.join(un);
+            });
+
+            var userId;
+            gameHub.client.playerJoined = function (user) {
+                userId = user.Id;
+                $("#usernameTb").attr("disabled", "disabled");
+                $("#join").attr("disabled", "disabled");
+
+                //                var url = '@Url.Action("1v1", "Home")';
+                //                window.location.href = url
+            };
+        });
+    </script>
+
+    <script src="~/Scripts/game.js"></script>
+}
+
+<div class="centre hidden" id="phaser"></div>
